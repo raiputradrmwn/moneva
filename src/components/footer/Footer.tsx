@@ -10,12 +10,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="flex flex-col items-center md:items-start">
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
-              <Image src="/image/bumn.png" alt="BUMN" width={120} height={40} />
-              <Image src="/image/ailo.png" alt="Ailo" width={100} height={40} />
+              <Image src="/image/bumn.png" alt="BUMN" width={130} height={40} />
+              <Image src="/image/ailo.png" alt="Ailo" width={120} height={40} />
               <Image
                 src="/image/logo.jpg"
                 alt="Telkom University"
-                width={180}
+                width={200}
                 height={180}
               />
               <Image
@@ -47,7 +47,7 @@ const Footer = () => {
         </div>
         <hr className="my-6 border-gray-300" />
         <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-          <p className="text-sm text-gray-600">&copy; 2024 Team</p>
+          <p className="text-sm text-gray-600">&copy; 2025 Ailo</p>
           <div className="flex flex-wrap justify-center md:justify-start gap-4 mt-4 md:mt-0">
             <span className="text-sm text-gray-600 hover:text-red-600 cursor-pointer transition">
               Terms of Service

@@ -24,7 +24,7 @@ const Navbar = () => {
       description: "Sampai Jumpa",
     });
     setTimeout(() => {
-      router.push("/dashboard");
+      router.push("/");
     }, 500);
   };
 

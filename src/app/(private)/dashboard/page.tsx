@@ -8,11 +8,8 @@ export default function Home() {
       <div className="container mx-auto px-6 py-10">
         <header className="text-left mb-10">
           <h1 className="text-3xl font-bold text-gray-900">
-            Selamat Datang di <span className="text-red-600">Dashboard Moneva</span>
+            Selamat Datang di <span className="text-[#CC2A2E]">Dashboard Moneva</span>
           </h1>
-          <p className="text-gray-600 mt-2 text-lg">
-            Monitoring lokasi dan distribusi bantuan secara real-time.
-          </p>
         </header>
         <section className="mb-10">
           <CardOverview />

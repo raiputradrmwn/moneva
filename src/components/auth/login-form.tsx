@@ -1,30 +1,36 @@
 "use client";
 
 import { useState } from "react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/app/api/auth/api";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react"; 
+import { useRouter } from "next/navigation";
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
     try {
-      const data = await login(email, password);
-      console.log("Login berhasil:", data);
-      localStorage.setItem("token", data.token);
-      alert("Login berhasil!");
+      await login(email, password);
+      toast.success("Login Berhasil", {
+        description: "Selamat Datang di Moneva",
+      });
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 500);
     } catch (error) {
+      toast.error("Login Gagal", {
+        description: "Email atau Password Salah",
+      });
       console.error(error);
     } finally {
       setLoading(false);
@@ -62,9 +68,8 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        {error && <p className="text-sm text-red-500">{error}</p>}
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+        <Button type="submit" className="w-full flex items-center justify-center gap-2" disabled={loading}>
+          {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Login"}
         </Button>
       </div>
     </form>

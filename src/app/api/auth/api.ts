@@ -1,12 +1,23 @@
 import { baseUrl } from "@/constant/variable";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 export const login = async (email: string, password: string) => {
-    const response = await fetch(`${baseUrl}/auth/login`, {
-        method: "POST",
+  try {
+    const response = await axios.post(`${baseUrl}/auth/login`, 
+      { email, password }, 
+      {
+        withCredentials: true,
         headers: {
-            "Content-Type": "application/json",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
-    });
-    return response.json();
+      }
+    );
+    const { token } = response.data;
+    Cookies.set("token", token, { expires: 7, secure: true, sameSite: "strict" });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };

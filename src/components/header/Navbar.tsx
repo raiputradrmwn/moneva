@@ -8,8 +8,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 const Navbar = () => {
+  const router = useRouter();
+  const handleLogout = () => {
+    Cookies.remove("token");
+    toast.success("Logout Berhasil", {
+      description: "Sampai Jumpa di Moneva",
+    });
+    setTimeout(() => {
+      router.push("/");
+    }, 500);
+  };
+
   return (
     <nav className="w-full bg-white px-6 py-4 flex items-center justify-between sticky top-0 z-10000">
       <div className="flex items-center space-x-3">
@@ -40,8 +54,6 @@ const Navbar = () => {
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gray-300 rounded-full"></div>{" "}
-          {/* Placeholder Avatar */}
           <div className="text-left">
             <p className="text-sm font-medium text-black">
               Raihan Putra Darmawan
@@ -52,7 +64,7 @@ const Navbar = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </nav>

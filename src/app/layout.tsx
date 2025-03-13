@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { poppins } from "@/style/font";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Moneva",
@@ -18,6 +19,7 @@ export default function RootLayout({
         className={`${poppins.className}`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );

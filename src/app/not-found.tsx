@@ -8,7 +8,7 @@ const NotFound = () => {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-800">
+    <div className="flex flex-col items-center justify-center min-h-screen text-gray-800">
       <div className="relative w-96 h-96">
         <Image src="/image/404.png" alt="Not Found" layout="fill" objectFit="contain" />
       </div>

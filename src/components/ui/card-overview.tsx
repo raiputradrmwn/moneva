@@ -8,10 +8,12 @@ interface OverviewCardProps {
 
 const OverviewCard = ({ title, value, icon }: OverviewCardProps) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center space-y-2">
-      <Image src={icon} alt={title} width={40} height={40} />
-      <p className="text-sm font-medium text-black">{title}</p>
-      <p className="text-lg font-bold text-black">{value}</p>
+    <div className="bg-white w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-sm mx-auto rounded-lg shadow-md p-6 flex flex-col lg:flex-row items-center md:justify-between gap-4">
+      <Image src={icon} alt={title} width={60} height={60} />
+      <div className="text-center lg:text-left">
+        <p className="text-lg font-medium text-black">{title}</p>
+        <p className="text-xl font-bold text-black">{value}</p>
+      </div>
     </div>
   );
 };

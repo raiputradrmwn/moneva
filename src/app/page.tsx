@@ -23,9 +23,11 @@ export default function Home() {
       </div>
       <div className="relative hidden bg-muted lg:block">
         <Image
-          src="/image/universitas-telkom.jpg"
+          src="/image/telkom2.jpg"
           alt="Image"
           fill
+          objectFit="cover"
+          objectPosition="center"
         />
       </div>
     </div>

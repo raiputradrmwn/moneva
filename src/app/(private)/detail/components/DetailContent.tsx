@@ -131,7 +131,7 @@ const DetailContent = ({ id }: DetailContentProps) => {
       .trim();
   };
 
-  const formatValue = (value: any) => {
+  const formatValue = (value: string | number | boolean) => {
     if (value === true)
       return <CheckCircle className="text-green-500 w-5 h-5" />;
     if (value === false) return <XCircle className="text-red-500 w-5 h-5" />;

@@ -4,7 +4,7 @@
   import { useRouter } from "next/navigation";
   import { getInput } from "@/app/api/form/api";
   import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-  import { ChevronRight, Star } from "lucide-react";
+  import { ChevronRight} from "lucide-react";
 
   interface MonitoringData {
     id: number;

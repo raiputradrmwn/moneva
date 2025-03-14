@@ -36,9 +36,75 @@ const MapDetail = dynamic(
 interface DetailContentProps {
   id: string;
 }
+interface OutcomeData {
+  konsumsiAirPerTahun?: number;
+  kualitasAir?: string;
+  rataRataTerpaparPenyakitSebelum?: number;
+  rataRataTerpaparPenyakitSesudah?: number;
+  awarenessMasyarakat?: string;
+  penilaianSaranaAirBersih?: string;
+  penilaianSanitasi?: string;
+  deskripsiAwareness?: string;
+  bisaDipakaiMCK?: boolean;
+  bisaDiminum?: boolean;
+  ecoKeberlanjutan?: boolean;
+  levelSaranaAirBersih?: number;
+  levelSanitasi?: number;
+}
+
+interface DampakData {
+  biayaBerobatSebelum?: number;
+  biayaBerobatSesudah?: number;
+  biayaAirBersihSebelum?: number;
+  biayaAirBersihSesudah?: number;
+  peningkatanEkonomiSebelum?: number;
+  peningkatanEkonomiSesudah?: number;
+  penurunanOrangSakitSebelum?: number;
+  penurunanOrangSakitSesudah?: number;
+  penurunanStuntingSebelum?: number;
+  penurunanStuntingSesudah?: number;
+  peningkatanIndeksKesehatanSebelum?: number;
+  peningkatanIndeksKesehatanSesudah?: number;
+  volumeLimbahDikelola?: number;
+  prosesKonservasiAir?: boolean;
+  penurunanIndexPencemaranSebelum?: number;
+  penurunanIndexPencemaranSesudah?: number;
+  sumberAirSebelum?: string;
+  sumberAirSesudah?: string;
+  biayaListrikSebelum?: number;
+  biayaListrikSesudah?: number;
+}
+
+interface DetailData {
+  id: number;
+  lokasi: string;
+  jenisBantuan: string;
+  jmlhKK: number;
+  jmlhMasyarakat: number;
+  jmlhPerempuan: number;
+  jmlhLaki: number;
+  debitAir: number;
+  pemakaianAir: number;
+  sistemPengelolaan: string;
+  sumberAir: string;
+  hargaAir: number;
+  pH: number;
+  TDS: number;
+  EC: number;
+  ORP: number;
+  user: {
+    name: string;
+  };
+  lat: number;
+  long: number;
+  img: string;
+  outcome?: OutcomeData;
+  dampak?: DampakData;
+}
 
 const DetailContent = ({ id }: DetailContentProps) => {
-  const [detail, setDetail] = useState<any>(null);
+  const [detail, setDetail] = useState<DetailData | null>(null);
+
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -58,10 +124,10 @@ const DetailContent = ({ id }: DetailContentProps) => {
   }, [id]);
   const formatKey = (key: string): string => {
     return key
-      .replace(/([A-Z])/g, " $1") // Tambahkan spasi sebelum huruf besar
+      .replace(/([A-Z])/g, " $1")
       .replace(/Sebelum/g, "(Sebelum)")
       .replace(/Sesudah/g, "(Sesudah)")
-      .replace(/\b\w/g, (char) => char.toUpperCase()) // Huruf pertama tiap kata kapital
+      .replace(/\b\w/g, (char) => char.toUpperCase()) 
       .trim();
   };
 
@@ -116,7 +182,7 @@ const DetailContent = ({ id }: DetailContentProps) => {
                 index + 1,
                 formatKey(baseKey),
                 value,
-                detail.dampak[`${baseKey}Sesudah`] || "Belum ada data",
+                detail.dampak?.[`${baseKey}Sesudah` as keyof DampakData] || "Belum ada data",
               ];
             }),
           [],
@@ -162,7 +228,7 @@ const DetailContent = ({ id }: DetailContentProps) => {
       <div className="flex items-center gap-3 text-lg text-gray-700 mt-2">
         <User className="w-6 h-6 text-blue-500" />
         <span>
-          Pembuat Laporan: <strong>{detail.user.name}</strong>
+          Pembuat Laporan: <strong>{detail?.user.name}</strong>
         </span>
       </div>
 
@@ -170,8 +236,8 @@ const DetailContent = ({ id }: DetailContentProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border border-gray-200 p-6 rounded-lg mt-4">
         <div className="flex flex-col items-center">
           <Image
-            src={detail.img}
-            alt={detail.lokasi}
+            src={detail?.img || ""}  
+            alt={detail?.lokasi || ""}
             width={350}
             height={250}
             className="rounded-lg shadow-md object-cover"
@@ -180,13 +246,13 @@ const DetailContent = ({ id }: DetailContentProps) => {
 
         <div className="flex flex-col items-center">
           <MapDetail
-            lat={detail.lat}
-            lng={detail.long}
-            lokasi={detail.lokasi}
+            lat={detail?.lat  || 0}
+            lng={detail?.long  || 0}
+            lokasi={detail?.lokasi || ""}
           />
           <p className="text-gray-600 flex items-center gap-2 mt-2">
             <MapPin className="h-5 w-5 text-red-500" />
-            Koordinat: {detail.lat}, {detail.long}
+            Koordinat: {detail?.lat}, {detail?.long}
           </p>
         </div>
       </div>
@@ -215,21 +281,21 @@ const DetailContent = ({ id }: DetailContentProps) => {
           </TableHeader>
           <TableBody>
             {[
-              { label: "Lokasi", value: detail.lokasi },
-              { label: "Jenis Bantuan", value: detail.jenisBantuan },
-              { label: "Jumlah KK", value: detail.jmlhKK },
-              { label: "Jumlah Masyarakat", value: detail.jmlhMasyarakat },
-              { label: "Jumlah Perempuan", value: detail.jmlhPerempuan },
-              { label: "Jumlah Laki-Laki", value: detail.jmlhLaki },
-              { label: "Debit Air", value: detail.debitAir },
-              { label: "Pemakaian Air", value: detail.pemakaianAir },
-              { label: "Sistem Pengelolaan", value: detail.sistemPengelolaan },
-              { label: "Sumber Air", value: detail.sumberAir },
-              { label: "Harga Air", value: detail.hargaAir },
-              { label: "pH", value: detail.pH },
-              { label: "TDS", value: detail.TDS },
-              { label: "EC", value: detail.EC },
-              { label: "ORP", value: detail.ORP },
+              { label: "Lokasi", value: detail?.lokasi },
+              { label: "Jenis Bantuan", value: detail?.jenisBantuan },
+              { label: "Jumlah KK", value: detail?.jmlhKK },
+              { label: "Jumlah Masyarakat", value: detail?.jmlhMasyarakat },
+              { label: "Jumlah Perempuan", value: detail?.jmlhPerempuan },
+              { label: "Jumlah Laki-Laki", value: detail?.jmlhLaki },
+              { label: "Debit Air", value: detail?.debitAir },
+              { label: "Pemakaian Air", value: detail?.pemakaianAir },
+              { label: "Sistem Pengelolaan", value: detail?.sistemPengelolaan },
+              { label: "Sumber Air", value: detail?.sumberAir },
+              { label: "Harga Air", value: detail?.hargaAir },
+              { label: "pH", value: detail?.pH },
+              { label: "TDS", value: detail?.TDS },
+              { label: "EC", value: detail?.EC },
+              { label: "ORP", value: detail?.ORP },
             ].map((item, index) => (
               <TableRow key={index}>
                 <TableCell className="text-center font-medium">
@@ -247,7 +313,7 @@ const DetailContent = ({ id }: DetailContentProps) => {
         📊 Outcome
       </h2>
       <div className="overflow-x-auto w-full">
-        {detail.outcome ? (
+        {detail?.outcome ? (
           <Table className="border border-gray-200 rounded-lg">
             <TableHeader>
               <TableRow className="bg-gray-100">
@@ -285,7 +351,7 @@ const DetailContent = ({ id }: DetailContentProps) => {
       {/* Dampak */}
       <h2 className="text-2xl font-bold text-gray-800 mt-10 mb-4">📊 Dampak</h2>
       <div className="overflow-x-auto w-full">
-        {detail.dampak ? (
+        {detail?.dampak ? (
           <Table className="border border-gray-200 rounded-lg">
             <TableHeader>
               <TableRow className="bg-gray-100">
@@ -308,7 +374,7 @@ const DetailContent = ({ id }: DetailContentProps) => {
                         {formatValue(value)}
                       </TableCell>
                       <TableCell className="text-center">
-                        {formatValue(detail.dampak[`${baseKey}Sesudah`])}
+                        {formatValue(detail.dampak?.[`${baseKey}Sesudah` as keyof DampakData])}
                       </TableCell>
                     </TableRow>
                   );

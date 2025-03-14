@@ -6,7 +6,14 @@
   import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
   import { ChevronRight, Star } from "lucide-react";
 
-  // Fungsi untuk menentukan level berdasarkan jumlah masyarakat
+  interface MonitoringData {
+    id: number;
+    lokasi: string;
+    jmlhKK: number;
+    jmlhMasyarakat: number;
+    jenisBantuan: string;
+    jmlhBantuan: number;
+  }
   const getLevel = (masyarakat: number) => {
     if (masyarakat <= 100) return 1; // Level 1: 1 Bintang
     if (masyarakat <= 200) return 2; // Level 2: 2 Bintang
@@ -14,7 +21,7 @@
   };
 
   const MonitoringTable = () => {
-    const [data, setData] = useState<any[]>([]);
+    const [data, setData] = useState<MonitoringData[]>([]);
     const router = useRouter();
     useEffect(() => {
       const fetchData = async () => {

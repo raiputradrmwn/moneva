@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import L, { LatLngTuple, LatLngBounds } from "leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L, { LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { getInput } from "@/app/api/form/api";
 import { Loader2 } from "lucide-react";
@@ -21,6 +21,13 @@ interface DesaLocation {
   lng: number;
 }
 
+// Perbaiki Tipe Data dari API
+interface ApiResponseItem {
+  id: number;
+  lokasi?: string;
+  lat?: number;
+  long?: number;
+}
 
 const Map = () => {
   const [desaLocations, setDesaLocations] = useState<DesaLocation[]>([]);
@@ -29,15 +36,15 @@ const Map = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const data = await getInput();
+        const data: ApiResponseItem[] = await getInput();
         if (data) {
-          const locations = data
-            .filter((item: any) => item.lat && item.long) // Hanya ambil yang punya lat dan long
-            .map((item: any) => ({
+          const locations: DesaLocation[] = data
+            .filter((item) => item.lat !== undefined && item.long !== undefined)
+            .map((item) => ({
               id: item.id,
               name: item.lokasi || "Desa Tanpa Nama",
-              lat: item.lat,
-              lng: item.long,
+              lat: item.lat!,
+              lng: item.long!,
             }));
           setDesaLocations(locations);
         }

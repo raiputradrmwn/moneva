@@ -1,8 +1,8 @@
 import Image from "next/image";
-
+import { ReactNode } from "react"; 
 interface OverviewCardProps {
   title: string;
-  value: string;
+  value: string | ReactNode;
   icon: string;
 }
 
@@ -14,8 +14,8 @@ const OverviewCard = ({ title, value, icon }: OverviewCardProps) => {
 
       {/* Teks */}
       <div className="text-center sm:text-left">
-        <p className="text-lg font-medium text-gray-800">{title}</p>
-        <p className="text-2xl font-bold text-black">{value}</p>
+        <p className="text-md font-medium text-gray-800 lg:text-xl">{title}</p>
+        <p className="text-lg font-bold text-black lg:text-2xl">{value}</p>
       </div>
     </div>
   );

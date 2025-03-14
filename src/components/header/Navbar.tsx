@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-
+import Link from "next/link";
 const Navbar = () => {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -31,15 +31,23 @@ const Navbar = () => {
   return (
     <>
       <nav className="w-full bg-white px-4 md:px-6 py-2 flex items-center justify-between sticky top-[-1] z-10000 shadow-md overflow-hidden">
-        <div className="flex items-center space-x-1 px-4">
-          <Image src="/icons/water.svg" alt="Logo" width={0} height={0} className="w-auto h-12" />
+        <Link href="/dashboard" className="flex items-center space-x-1 px-4">
+          <Image
+            src="/icons/water.svg"
+            alt="Logo"
+            width={0}
+            height={0}
+            className="w-auto h-12"
+          />
           <h1 className="text-xl font-medium">Moneva</h1>
-        </div>
+        </Link>
         <div className="hidden md:flex items-center space-x-4">
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center space-x-3">
               <div className="text-left">
-                <p className="text-sm font-medium text-black">Raihan Putra Darmawan</p>
+                <p className="text-sm font-medium text-black">
+                  Raihan Putra Darmawan
+                </p>
                 <p className="text-xs text-gray-500">Admin</p>
               </div>
               <ChevronDown className="h-4 w-4 text-gray-600" />
@@ -77,7 +85,11 @@ const Navbar = () => {
 
         {/* Sidebar Content */}
         <div className="p-6 flex flex-col space-y-4">
-          <Button variant="ghost" className="text-red-600 text-lg font-medium" onClick={handleLogout}>
+          <Button
+            variant="ghost"
+            className="text-red-600 text-lg font-medium"
+            onClick={handleLogout}
+          >
             Logout
           </Button>
         </div>
@@ -87,4 +99,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-  

@@ -131,7 +131,7 @@ const DetailContent = ({ id }: DetailContentProps) => {
       .trim();
   };
 
-  const formatValue = (value: string | number | boolean) => {
+  const formatValue = (value: string | number | boolean | null) => {
     if (value === true)
       return <CheckCircle className="text-green-500 w-5 h-5" />;
     if (value === false) return <XCircle className="text-red-500 w-5 h-5" />;
@@ -374,7 +374,7 @@ const DetailContent = ({ id }: DetailContentProps) => {
                         {formatValue(value)}
                       </TableCell>
                       <TableCell className="text-center">
-                        {formatValue(detail.dampak?.[`${baseKey}Sesudah` as keyof DampakData])}
+                        {formatValue(detail.dampak?.[`${baseKey}Sesudah` as keyof DampakData]?? null)}
                       </TableCell>
                     </TableRow>
                   );

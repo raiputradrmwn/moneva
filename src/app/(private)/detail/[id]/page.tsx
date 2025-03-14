@@ -1,5 +1,11 @@
 import DetailContent from "../components/DetailContent";
 
-export default function DetailPage({ params }: { params: { id: string } }) {
+interface DetailPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default function DetailPage({ params }: DetailPageProps) {
   return <DetailContent id={params.id} />;
 }

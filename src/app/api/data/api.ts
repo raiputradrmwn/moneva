@@ -21,3 +21,14 @@ export const getTotalBantuan = async () => {
     return null;
   }
 };
+
+
+export const getTotalLokasi = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/totalplaces`);
+      return response.data.totalPlaces;
+    } catch (error) {
+      console.error("Gagal mengambil data totalBantuan:", error);
+      return null;
+    }
+  };

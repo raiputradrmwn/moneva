@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import OverviewCard from "@/components/ui/card-overview";
-import { getTotalKK, getTotalBantuan } from "@/app/api/data/api";
+import { getTotalKK, getTotalBantuan, getTotalLokasi } from "@/app/api/data/api";
 import { Loader } from "lucide-react"; // Import Loader dari Lucide React
 
 const CardOverview = () => {
   const [totalKK, setTotalKK] = useState<number | null>(null);
   const [totalBantuan, setTotalBantuan] = useState<number | null>(null);
+  const [totalPlaces, setTotalPlaces] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,9 +16,10 @@ const CardOverview = () => {
       try {
         const kk = await getTotalKK();
         const bantuan = await getTotalBantuan();
-        
+        const lokasi = await getTotalLokasi();
         setTotalKK(kk);
         setTotalBantuan(bantuan);
+        setTotalPlaces(lokasi);
       } catch (error) {
         console.error("Gagal mengambil data:", error);
       } finally {
@@ -36,7 +38,7 @@ const CardOverview = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-10 lg:gap-14">
         <OverviewCard
           title="Lokasi Bantuan"
-          value={loading ? <Loader className="animate-spin w-5 h-5" /> : "10"}
+          value={loading ? <Loader className="animate-spin w-5 h-5" /> : totalPlaces !== null ? totalPlaces.toLocaleString() : "-"}
           icon="/icons/location.svg"
         />
         <OverviewCard

@@ -1,8 +1,12 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L, { LatLngTuple } from "leaflet";
-import "leaflet/dist/leaflet.css"; 
+import { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import L, { LatLngTuple, LatLngBounds } from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { getInput } from "@/app/api/form/api";
+import { Loader2 } from "lucide-react";
+
 const customIcon = new L.Icon({
   iconUrl: "/icons/marker.svg",
   iconSize: [30, 40],
@@ -10,29 +14,69 @@ const customIcon = new L.Icon({
   popupAnchor: [0, -40],
 });
 
-const desaLocations = [
-  { id: 1, name: "Desa A", lat: -6.9743, lng: 107.6303 },
-  { id: 2, name: "Desa B", lat: -6.9785, lng: 107.6356 },
-  { id: 3, name: "Desa C", lat: -6.9721, lng: 107.6280 },
-];
+interface DesaLocation {
+  id: number;
+  name: string;
+  lat: number;
+  lng: number;
+}
 
-const center: LatLngTuple = desaLocations.length > 0
-  ? [desaLocations[0].lat, desaLocations[0].lng]
-  : [-6.9743, 107.6303];
 
 const Map = () => {
+  const [desaLocations, setDesaLocations] = useState<DesaLocation[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const data = await getInput();
+        if (data) {
+          const locations = data
+            .filter((item: any) => item.lat && item.long) // Hanya ambil yang punya lat dan long
+            .map((item: any) => ({
+              id: item.id,
+              name: item.lokasi || "Desa Tanpa Nama",
+              lat: item.lat,
+              lng: item.long,
+            }));
+          setDesaLocations(locations);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data lokasi:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
+  const center: LatLngTuple = [-2.5489, 118.0149];
+
   return (
-      <MapContainer center={center} zoom={14} className="h-[400px] max- w-full">
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
-      {desaLocations.map((desa) => (
-        <Marker key={desa.id} position={[desa.lat, desa.lng] as LatLngTuple} icon={customIcon}>
-          <Popup>{desa.name}</Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+    <div className="relative w-full h-[400px]">
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/70 z-10">
+          <Loader2 className="animate-spin w-8 h-8 text-gray-500" />
+        </div>
+      )}
+
+      <MapContainer center={center} zoom={5} className="h-full w-full">
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        {desaLocations.map((desa) => (
+          <Marker
+            key={desa.id}
+            position={[desa.lat, desa.lng] as LatLngTuple}
+            icon={customIcon}
+          >
+            <Popup>{desa.name}</Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
   );
 };
 

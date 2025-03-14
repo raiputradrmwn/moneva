@@ -17,7 +17,7 @@ export default function Home() {
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 ">
-          <div className="flex items-center gap-2 font-medium">
+        <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 lg:gap-8">
             <Image src="/image/bumn.png" alt="BUMN" width={90} height={50} />
             <Image src="/image/ailo.png" alt="Ailo" width={90} height={50} />
             <Image
@@ -29,8 +29,8 @@ export default function Home() {
             <Image
               src="/image/logotelkom1.png"
               alt="Telkom Indonesia"
-              width={40}
-              height={40}
+              width={35}
+              height={35}
             />
           </div>
         </div>

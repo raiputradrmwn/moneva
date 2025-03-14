@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   CheckCircle,
   XCircle,
+  Star,
 } from "lucide-react";
 import { getDetailById } from "@/app/api/form/api";
 import * as XLSX from "xlsx";
@@ -74,6 +75,58 @@ interface DampakData {
   biayaListrikSebelum?: number;
   biayaListrikSesudah?: number;
 }
+const dampakLabels: Record<string, string> = {
+  sumberAirSebelum: "Sumber Air Sebelum",
+  sumberAirSesudah: "Sumber Air Sesudah",
+  biayaListrikSebelum: "Biaya Listrik Sebelum",
+  biayaListrikSesudah: "Biaya Listrik Sesudah",
+  biayaBerobatSebelum: "Biaya Berobat Sebelum",
+  biayaBerobatSesudah: "Biaya Berobat Sesudah",
+  biayaAirBersihSebelum: "Biaya Air Pemenuhan Bersih Sebelum",
+  biayaAirBersihSesudah: "Biaya Air Pemenuhan Bersih Sesudah",
+  peningkatanEkonomiSebelum: "Peningkatan Ekonomi Sebelum",
+  peningkatanEkonomiSesudah: "Peningkatan Ekonomi Sesudah",
+  penurunanOrangSakitSebelum: "Penurunan Orang Sakit Sebelum",
+  penurunanOrangSakitSesudah: "Penurunan Orang Sakit Sesudah",
+  penurunanStuntingSebelum: "Penurunan Stunting Sebelum",
+  penurunanStuntingSesudah: "Penurunan Stunting Sesudah",
+  peningkatanIndeksKesehatanSebelum:
+    "Peningkatan Indeks Kesehatan Masyarakat Sebelum (terutama perempuan dan anak-anak)",
+  peningkatanIndeksKesehatanSesudah:
+    "Peningkatan Indeks Kesehatan Masyarakat Sesudah (terutama perempuan dan anak-anak)",
+  volumeLimbahDikelola: "Volume Limbah Yang Berhasil Dikelola Masyarakat",
+  prosesKonservasiAir: "Proses Konservasi Air",
+  penurunanIndexPencemaranSebelum:
+    "Penurunan Index Pencemaran Lingkungan Sebelum",
+  penurunanIndexPencemaranSesudah:
+    "Penurunan Index Pencemaran Lingkungan Sesudah",
+};
+const outcomeLabels: Record<string, string> = {
+  konsumsiAirPerTahun: "Konsumsi Air per Tahun (liter)",
+  kualitasAir: "Kualitas air sudah sesuai kebutuhan?",
+  rataRataTerpaparPenyakitSebelum: "Rata-rata Terpapar Penyakit Sebelum",
+  rataRataTerpaparPenyakitSesudah: "Rata-rata Terpapar Penyakit Sesudah",
+  airHanyaUntukMCK: "Air hanya untuk MCK",
+  aksesTerbatas: "Akses terbatas",
+  butuhUsahaJarak: "Butuh usaha jarak",
+  airTersediaSetiapSaat: "Air tersedia setiap saat",
+  pengelolaanProfesional: "Pengelolaan profesional",
+  aksesMudah: "Akses mudah",
+  efisiensiAir: "Efisiensi air",
+  ramahLingkungan: "Ramah lingkungan",
+  keadilanAkses: "Keadilan akses",
+  adaptabilitasSistem: "Adaptabilitas sistem",
+  toiletBerfungsi: "Toilet berfungsi",
+  aksesSanitasiMemadai: "Akses sanitasi memadai",
+  eksposurLimbah: "Eksposur limbah",
+  limbahDikelolaAman: "Limbah dikelola aman",
+  adaSeptictank: "Ada septictank",
+  sanitasiBersih: "Sanitasi bersih",
+  aksesKelompokRentan: "Akses kelompok rentan",
+  rasioMCKMemadai: "Rasio MCK memadai",
+  keberlanjutanEkosistem: "Keberlanjutan ekosistem",
+  pemanfaatanAirEfisien: "Pemanfaatan air efisien",
+};
 
 interface DetailData {
   id: number;
@@ -127,7 +180,7 @@ const DetailContent = ({ id }: DetailContentProps) => {
       .replace(/([A-Z])/g, " $1")
       .replace(/Sebelum/g, "(Sebelum)")
       .replace(/Sesudah/g, "(Sesudah)")
-      .replace(/\b\w/g, (char) => char.toUpperCase()) 
+      .replace(/\b\w/g, (char) => char.toUpperCase())
       .trim();
   };
 
@@ -164,7 +217,13 @@ const DetailContent = ({ id }: DetailContentProps) => {
           ["Outcome", ""],
           ["Item", "Detail"],
           ...Object.entries(detail.outcome)
-            .filter(([key, value]) => value !== null && key !== "createdAt" && key !== "id" && key !== "formInputId")
+            .filter(
+              ([key, value]) =>
+                value !== null &&
+                key !== "createdAt" &&
+                key !== "id" &&
+                key !== "formInputId"
+            )
             .map(([key, value]) => [formatKey(key), value]),
           [],
         ]
@@ -182,22 +241,18 @@ const DetailContent = ({ id }: DetailContentProps) => {
                 index + 1,
                 formatKey(baseKey),
                 value,
-                detail.dampak?.[`${baseKey}Sesudah` as keyof DampakData] || "Belum ada data",
+                detail.dampak?.[`${baseKey}Sesudah` as keyof DampakData] ||
+                  "Belum ada data",
               ];
             }),
           [],
         ]
       : [["Dampak", "Belum ada data"], []];
 
-    // Gabungkan semua data dalam satu array
     const finalData = [...mainData, ...outcomeData, ...dampakData];
-
-    // Konversi ke sheet
     const ws = XLSX.utils.aoa_to_sheet(finalData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Detail Lokasi");
-
-    // Simpan sebagai file Excel
     XLSX.writeFile(wb, `Detail_${detail.lokasi}.xlsx`);
   };
 
@@ -208,10 +263,20 @@ const DetailContent = ({ id }: DetailContentProps) => {
       </div>
     );
   }
-
+  const renderStars = (level: number | undefined) => {
+    if (!level || level === 0) return null; // Jika tidak ada level, jangan tampilkan apa pun
+    return (
+      <div className="flex items-center gap-1">
+        {Array(level)
+          .fill(0)
+          .map((_, i) => (
+            <Star key={i} className="h-5 w-5 text-yellow-500" />
+          ))}
+      </div>
+    );
+  };
   return (
     <div className="container mx-auto p-8">
-      {/* Tombol Back dengan Chevron Left */}
       <button
         className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium mb-4 cursor-pointer"
         onClick={() => router.push("/dashboard")}
@@ -223,31 +288,46 @@ const DetailContent = ({ id }: DetailContentProps) => {
       <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
         Detail Laporan
       </h1>
-
-      {/* Pembuat Laporan */}
       <div className="flex items-center gap-3 text-lg text-gray-700 mt-2">
         <User className="w-6 h-6 text-blue-500" />
         <span>
           Pembuat Laporan: <strong>{detail?.user.name}</strong>
         </span>
       </div>
-
-      {/* Layout Gambar & Map */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border border-gray-200 p-6 rounded-lg mt-4">
+        {/* Bagian Gambar */}
         <div className="flex flex-col items-center">
           <Image
-            src={detail?.img || ""}  
+            src={detail?.img || ""}
             alt={detail?.lokasi || ""}
             width={350}
             height={250}
             className="rounded-lg shadow-md object-cover"
           />
+          {detail?.outcome?.levelSaranaAirBersih &&
+            detail?.outcome?.levelSaranaAirBersih !== 0 && (
+              <div className="mt-4 flex flex-col items-center">
+                <p className="text-gray-800 font-medium">
+                  Level Sarana Air Bersih
+                </p>
+                {renderStars(detail.outcome.levelSaranaAirBersih)}
+              </div>
+            )}
+
+          {detail?.outcome?.levelSanitasi &&
+            detail?.outcome?.levelSanitasi !== 0 && (
+              <div className="mt-4 flex flex-col items-center">
+                <p className="text-gray-800 font-medium">Level Sanitasi</p>
+                {renderStars(detail.outcome.levelSanitasi)}
+              </div>
+            )}
         </div>
 
+        {/* Bagian Peta + Level Sanitasi & Sarana Air Bersih */}
         <div className="flex flex-col items-center">
           <MapDetail
-            lat={detail?.lat  || 0}
-            lng={detail?.long  || 0}
+            lat={detail?.lat || 0}
+            lng={detail?.long || 0}
             lokasi={detail?.lokasi || ""}
           />
           <p className="text-gray-600 flex items-center gap-2 mt-2">
@@ -287,15 +367,24 @@ const DetailContent = ({ id }: DetailContentProps) => {
               { label: "Jumlah Masyarakat", value: detail?.jmlhMasyarakat },
               { label: "Jumlah Perempuan", value: detail?.jmlhPerempuan },
               { label: "Jumlah Laki-Laki", value: detail?.jmlhLaki },
-              { label: "Debit Air", value: detail?.debitAir },
-              { label: "Pemakaian Air", value: detail?.pemakaianAir },
-              { label: "Sistem Pengelolaan", value: detail?.sistemPengelolaan },
+              {
+                label: "Jumlah Debit Air yang dihasilkan",
+                value: detail?.debitAir,
+              },
+              {
+                label: "Pemakaian Air (Untuk keperluan apa saja)",
+                value: detail?.pemakaianAir,
+              },
+              {
+                label: "Sistem Pengelolaan sanitasi dan sarana air bersih",
+                value: detail?.sistemPengelolaan,
+              },
               { label: "Sumber Air", value: detail?.sumberAir },
-              { label: "Harga Air", value: detail?.hargaAir },
+              { label: "Harga Air yang dibayar", value: detail?.hargaAir },
               { label: "pH", value: detail?.pH },
-              { label: "TDS", value: detail?.TDS },
-              { label: "EC", value: detail?.EC },
-              { label: "ORP", value: detail?.ORP },
+              { label: "TDS (ppm)", value: detail?.TDS },
+              { label: "EC (µS/cm)", value: detail?.EC },
+              { label: "ORP (mV)", value: detail?.ORP },
             ].map((item, index) => (
               <TableRow key={index}>
                 <TableCell className="text-center font-medium">
@@ -326,15 +415,21 @@ const DetailContent = ({ id }: DetailContentProps) => {
               {Object.entries(detail.outcome)
                 .filter(
                   ([key, value]) =>
-                    value !== null && value !== undefined && key !== "createdAt" && key !== "id" && key !== "formInputId"
-                ) // Hanya tampilkan jika ada data
+                    value !== null &&
+                    value !== undefined &&
+                    key !== "createdAt" &&
+                    key !== "id" &&
+                    key !== "formInputId" &&
+                    key !== "levelSanitasi" &&
+                    key !== "levelSaranaAirBersih"
+                )
                 .map(([key, value], index) => (
                   <TableRow key={index} className="border-b">
                     <TableCell className="text-center font-medium p-3">
                       {index + 1}
                     </TableCell>
                     <TableCell className="p-3 text-left">
-                      {formatKey(key)}
+                    {outcomeLabels[key] || formatKey(key)}
                     </TableCell>
                     <TableCell className="p-3 text-left flex items-center">
                       {formatValue(value)}
@@ -348,7 +443,6 @@ const DetailContent = ({ id }: DetailContentProps) => {
         )}
       </div>
 
-      {/* Dampak */}
       <h2 className="text-2xl font-bold text-gray-800 mt-10 mb-4">📊 Dampak</h2>
       <div className="overflow-x-auto w-full">
         {detail?.dampak ? (
@@ -365,16 +459,22 @@ const DetailContent = ({ id }: DetailContentProps) => {
               {Object.entries(detail.dampak)
                 .filter(([key]) => key.includes("Sebelum"))
                 .map(([key, value], index) => {
-                  const baseKey = key.replace("Sebelum", "");
+                  const baseKey = key.replace("Sebelum", "").trim();
                   return (
                     <TableRow key={index}>
                       <TableCell>{index + 1}</TableCell>
-                      <TableCell>{formatKey(baseKey)}</TableCell>
+                      <TableCell>
+                        {dampakLabels[key] || formatKey(baseKey)}
+                      </TableCell>
                       <TableCell className="text-center">
                         {formatValue(value)}
                       </TableCell>
                       <TableCell className="text-center">
-                        {formatValue(detail.dampak?.[`${baseKey}Sesudah` as keyof DampakData]?? null)}
+                        {formatValue(
+                          detail.dampak?.[
+                            `${baseKey}Sesudah` as keyof DampakData
+                          ] ?? null
+                        )}
                       </TableCell>
                     </TableRow>
                   );

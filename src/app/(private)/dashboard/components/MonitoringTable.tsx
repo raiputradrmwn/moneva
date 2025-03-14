@@ -14,11 +14,6 @@
     jenisBantuan: string;
     jmlhBantuan: number;
   }
-  const getLevel = (masyarakat: number) => {
-    if (masyarakat <= 100) return 1; // Level 1: 1 Bintang
-    if (masyarakat <= 200) return 2; // Level 2: 2 Bintang
-    return 3; // Level 3: 3 Bintang
-  };
 
   const MonitoringTable = () => {
     const [data, setData] = useState<MonitoringData[]>([]);
@@ -49,7 +44,6 @@
                 <TableHead className="text-gray-500 text-left p-4">Jumlah Masyarakat</TableHead>
                 <TableHead className="text-gray-500 text-left p-4">Jenis Bantuan</TableHead>
                 <TableHead className="text-gray-500 text-left p-4">Jumlah Bantuan</TableHead>
-                <TableHead className="text-gray-500 text-left p-4">Level</TableHead>
                 <TableHead className="p-4"></TableHead>
               </TableRow>
             </TableHeader>
@@ -67,14 +61,6 @@
                     <TableCell className="text-gray-700 p-4">{item.jmlhMasyarakat}</TableCell>
                     <TableCell className="text-gray-700 p-4">{item.jenisBantuan}</TableCell>
                     <TableCell className="text-gray-700 p-4">{item.jmlhBantuan}</TableCell>
-                    <TableCell className="text-gray-700 p-4 flex items-center gap-1">
-                      {Array(getLevel(item.jmlhMasyarakat))
-                        .fill(0)
-                        .map((_, i) => (
-                          <Star key={i} className="h-5 w-5 text-yellow-500" />
-                        ))}
-                    </TableCell>
-
                     <TableCell className="p-4">
                       <ChevronRight className="h-5 w-5 text-gray-500" />
                     </TableCell>
